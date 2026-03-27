@@ -39,7 +39,12 @@ Corre directamente en el navegador del celular, sin necesidad de instalar nada.
 administracion_escuela_deportiva/
 ├── web-app/                 # Aplicación web (lo que se despliega y usa)
 │   ├── index.html           # Shell HTML de la SPA
-│   ├── app.js               # Lógica completa (Firebase, UI, pagos, PDF)
+│   ├── js/                  # Lógica separada en ES6 Modules
+│   │   ├── app.js           # Punto de entrada y orquestador
+│   │   ├── core/            # Router, Auth y Estado global
+│   │   ├── firebase/        # Inicialización de Firebase
+│   │   ├── modules/         # Lógica por dominio (students, payments, users, etc.)
+│   │   └── utils/           # Helpers compartidos y jsPDF
 │   ├── style.css            # Estilos (mobile-first, glassmorphism)
 │   ├── manifest.json        # PWA manifest
 │   └── sw.js                # Service Worker
@@ -85,14 +90,19 @@ firebase deploy --only hosting
 
 ---
 
-## 👤 Primer uso — Crear administrador
+## 👤 Gestión de Usuarios y Permisos
 
-El primer usuario que inicia sesión queda con `role: prof` y `active: false`.  
-Para activarlo como administrador:
+El sistema cuenta con dos roles: `admin` y `prof`.  
 
+### Primer Administrador (Setup inicial)
+El primer usuario que inicia sesión queda inactivo. Para activarlo como administrador:
 1. Ir a **Firebase Console → Firestore → colección `users`**
 2. Abrir el documento con el UID del usuario
 3. Modificar: `role: "admin"` y `active: true`
+
+### Pantalla "Usuarios"
+A partir de ahí, **los administradores pueden invitar nuevos usuarios** (otros admins o profesores) directamente desde la aplicación web en la pantalla **Usuarios**.  
+La vinculación se hace exclusivamente por **email (Cuenta de Google)**. Al iniciar sesión con ese email, el nuevo usuario toma automáticamente el rol asignado por el admin original.
 
 ---
 
@@ -100,11 +110,12 @@ Para activarlo como administrador:
 
 | Colección | Descripción |
 |-----------|-------------|
-| `users` | Usuarios autenticados (role, active, staffId) |
-| `staff` | Profesores (email, specialty, linkedUid) |
-| `students` | Alumnos (datos personales + familyKey) |
-| `activities` | Actividades (días, horario, cuota, startDate, endDate, professorId) |
+| `users` | Usuarios autenticados (role, active, displayName, photoURL) |
+| `invites` | Invitaciones pendientes de registro enviadas por admins (email y rol) |
+| `staff` | Profesores (linkeado por email al usuario que inicia sesión) |
+| `students` | Alumnos (datos personales + contactos) |
+| `activities` | Actividades (días, horario, cuota, startDate, endDate, status) |
 | `enrollments` | Inscripciones alumno↔actividad |
 | `attendance` | Registros de asistencia por fecha |
-| `payments` | Pagos mensuales (status: paid / reverted, receiptNumber) |
-| `counters/receiptCounter` | Contador correlativo de comprobantes |
+| `payments` | Pagos mensuales (status: paid / pendiente, receiptNumber) |
+| `counters/receiptCounter` | Contador correlativo de recibos (ej: `CASTA-000001`) |
