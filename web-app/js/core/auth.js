@@ -110,6 +110,22 @@ export function initAuth() {
                 $('screen-app')?.classList.remove('hidden');
                 $('screen-app')?.classList.add('active');
 
+                // Populate user avatar and sidebar info
+                const avatarEl = $('user-avatar');
+                if (avatarEl) {
+                    if (user.photoURL) {
+                        avatarEl.innerHTML = `<img src="${user.photoURL}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+                    } else {
+                        avatarEl.textContent = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
+                    }
+                    avatarEl.title = user.displayName || user.email || '';
+                }
+
+                const sidebarInfo = $('sidebar-user-info');
+                if (sidebarInfo) {
+                    sidebarInfo.innerHTML = `<strong>${user.displayName || ''}</strong><br><small>${user.email || ''}</small>`;
+                }
+
                 window.dispatchEvent(new CustomEvent('auth-success', { detail: { user } }));
 
             } catch (err) {
