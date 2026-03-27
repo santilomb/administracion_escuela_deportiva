@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CASTA — Escuela Deportiva</title>
+    <meta name="description" content="Sistema de administración Escuela Deportiva CASTA">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- jsPDF for client-side receipt generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="screen-login" class="screen active">
+            <div class="login-bg">
+                <div class="login-blob blob-1"></div>
+                <div class="login-blob blob-2"></div>
+            </div>
+            <div class="login-container">
+                <div class="login-card glass">
+                    <div class="logo-wrap">
+                        <img src="logo.png" alt="Logo CASTA"
+                            style="width:120px;height:auto;margin-bottom:12px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+                        <h1 class="logo-title">Escuela Deportiva CASTA</h1>
+                    </div>
+                    <div id="login-error" class="alert alert-error hidden"></div>
+                    <button id="btn-google-login" class="btn-google" onclick="signInWithGoogle()">
+                        <svg width="20" height="20" viewBox="0 0 48 48">
+                            <path fill="#EA4335"
+                                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                            <path fill="#4285F4"
+                                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                            <path fill="#FBBC05"
+                                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                            <path fill="#34A853"
+                                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                        </svg>
+                        Iniciar sesión con Google
+                    </button>
+                    <p class="login-hint">Solo usuarios autorizados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Shell -->
+        <div id="screen-app" class="screen hidden">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <button class="btn-icon menu-toggle" onclick="toggleSidebar()" aria-label="Menú">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <div class="topbar-title">
+                    <img src="logo.png" style="width:26px; height:26px; object-fit:contain; border-radius:4px;">
+                    <span id="topbar-page-title">CASTA</span>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-avatar" id="user-avatar" title=""></div>
+                    <button class="btn-icon" onclick="signOut()" title="Cerrar sesión">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar" onclick="handleSidebarClick(event)">
+                <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+                <div class="sidebar-panel">
+                    <div class="sidebar-header">
+                        <div class="sidebar-logo"><img src="logo.png"
+                                style="width:24px;height:24px;vertical-align:middle;margin-right:8px;border-radius:4px;">
+                            Escuela Deportiva CASTA</div>
+                        <button class="btn-icon sidebar-close" onclick="closeSidebar()">✕</button>
+                    </div>
+                    <ul class="nav-list">
+                        <li><button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+                                <span class="nav-icon">📊</span> Dashboard
+                            </button></li>
+                        <li><button class="nav-item" data-page="students" onclick="navigate('students')">
+                                <span class="nav-icon">👨‍🎓</span> Alumnos
+                            </button></li>
+                        <li><button class="nav-item" data-page="activities" onclick="navigate('activities')">
+                                <span class="nav-icon">🏃</span> Actividades
+                            </button></li>
+                        <li><button class="nav-item" data-page="attendance" onclick="navigate('attendance')">
+                                <span class="nav-icon">✅</span> Asistencia
+                            </button></li>
+                        <li><button class="nav-item" data-page="payments" onclick="navigate('payments')">
+                                <span class="nav-icon">💰</span> Pagos
+                            </button></li>
+                        <li><button class="nav-item" data-page="staff" onclick="navigate('staff')">
+                                <span class="nav-icon">👨‍🏫</span> Profesores
+                            </button></li>
+                        <li><button class="nav-item" data-page="exports" onclick="navigate('exports')">
+                                <span class="nav-icon">�</span> Listados
+                            </button></li>
+                        <li id="nav-users" class="hidden"><button class="nav-item" data-page="users"
+                                onclick="navigate('users')">
+                                <span class="nav-icon">👥</span> Usuarios
+                            </button></li>
+                    </ul>
+                    <div class="sidebar-footer">
+                        <div id="sidebar-user-info" class="sidebar-user"></div>
+                        <button class="btn-secondary btn-sm" onclick="signOut()">Cerrar sesión</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+
+                <!-- DASHBOARD PAGE -->
+                <div id="page-dashboard" class="page active">
+                    <div class="page-header">
+                        <h2 class="page-title">Dashboard</h2>
+                    </div>
+                    <div class="stats-grid" id="dashboard-stats">
+                        <div class="stat-card loading-pulse">
+                            <div class="stat-icon">👨‍🎓</div>
+                            <div class="stat-value" id="stat-students">—</div>
+                            <div class="stat-label">Alumnos activos</div>
+                        </div>
+                        <div class="stat-card loading-pulse">
+                            <div class="stat-icon">🏃</div>
+                            <div class="stat-value" id="stat-activities">—</div>
+                            <div class="stat-label">Actividades activas</div>
+                        </div>
+                        <div class="stat-card loading-pulse">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-value" id="stat-paid">—</div>
+                            <div class="stat-label">Pagos este mes</div>
+                        </div>
+                        <div class="stat-card loading-pulse">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-value" id="stat-pending">—</div>
+                            <div class="stat-label">Pendientes este mes</div>
+                        </div>
+                    </div>
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3 class="card-title">Actividades del día</h3>
+                            <span id="today-label" class="badge badge-blue"></span>
+                        </div>
+                        <div id="today-activities" class="activity-list">
+                            <div class="empty-state">Cargando...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STUDENTS PAGE -->
+                <div id="page-students" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Alumnos</h2>
+                        <button class="btn-primary" onclick="openStudentForm()">+ Nuevo alumno</button>
+                    </div>
+                    <div class="search-bar-wrap">
+                        <input type="search" id="student-search" class="search-input"
+                            placeholder="🔍 Buscar por nombre..." oninput="filterStudents()">
+                    </div>
+                    <div id="students-list" class="list-container">
+                        <div class="loading-spinner">Cargando alumnos...</div>
+                    </div>
+                </div>
+
+                <!-- STAFF / PROFESSORS PAGE -->
+                <div id="page-staff" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Profesores</h2>
+                        <button class="btn-primary" onclick="openStaffForm()">+ Nuevo profesor</button>
+                    </div>
+                    <div id="staff-list" class="list-container">
+                        <div class="loading-spinner">Cargando...</div>
+                    </div>
+                </div>
+
+                <!-- ACTIVITIES PAGE -->
+                <div id="page-activities" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Actividades</h2>
+                        <button class="btn-primary" id="btn-new-activity" onclick="openActivityForm()">+ Nueva
+                            actividad</button>
+                    </div>
+                    <div id="activities-list" class="list-container">
+                        <div class="loading-spinner">Cargando actividades...</div>
+                    </div>
+                </div>
+
+                <!-- ATTENDANCE PAGE -->
+                <div id="page-attendance" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Asistencia</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom:0">
+                                <label class="form-label">Actividad</label>
+                                <select id="attendance-activity-select" class="form-select"
+                                    onchange="loadAttendanceGrid()">
+                                    <option value="">— Seleccionar actividad —</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0">
+                                <label class="form-label">Mes</label>
+                                <select id="attendance-month-select" class="form-select"
+                                    onchange="loadAttendanceGrid()">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="attendance-grid" class="mt-4"></div>
+                </div>
+
+                <!-- PAYMENTS PAGE -->
+                <div id="page-payments" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Pagos</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom:0">
+                                <label class="form-label">Actividad</label>
+                                <select id="pay-activity-select" class="form-select" onchange="loadPaymentsGrid()">
+                                    <option value="">— Seleccionar actividad —</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0">
+                                <label class="form-label">Mes</label>
+                                <select id="pay-month-select" class="form-select" onchange="loadPaymentsGrid()">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="payments-grid" class="mt-4"></div>
+                </div>
+
+                <!-- EXPORTS PAGE -->
+                <div id="page-exports" class="page hidden">
+                    <div class="page-header">
+                        <h2 class="page-title">Listados</h2>
+                    </div>
+
+                    <!-- Tab selector -->
+                    <div class="listados-tabs" id="listados-tabs">
+                        <button class="listados-tab active" data-tab="actividad"
+                            onclick="switchListadoTab('actividad')">👥 Por actividad</button>
+                        <button class="listados-tab" data-tab="pagos" onclick="switchListadoTab('pagos')">💳
+                            Pagos por mes</button>
+                        <button class="listados-tab" data-tab="deudores" onclick="switchListadoTab('deudores')">⚠️
+                            Deudores</button>
+                        <button class="listados-tab" data-tab="recaudacion" onclick="switchListadoTab('recaudacion')">💰
+                            Recaudación</button>
+                    </div>
+
+                    <!-- ── TAB: ACTIVIDAD ── -->
+                    <div id="listado-actividad" class="listado-panel">
+                        <div class="card" style="margin-bottom:12px">
+                            <div class="form-group" style="margin:0">
+                                <label class="form-label">Actividad</label>
+                                <select id="lact-activity" class="form-select" onchange="runListadoActividad()">
+                                    <option value="">— Seleccionar actividad —</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="lact-info" style="display:none">
+                            <div class="card" id="lact-activity-info" style="margin-bottom:12px"></div>
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <h3
+                                    style="font-size:14px;font-weight:600;color:var(--gray-500);text-transform:uppercase">
+                                    Alumnos inscriptos <span id="lact-count" class="badge badge-blue">0</span>
+                                </h3>
+                                <div style="display:flex;gap:8px">
+                                    <button class="btn-secondary btn-sm" onclick="listadoExportCSV('actividad')">⬇
+                                        CSV</button>
+                                    <button class="btn-primary btn-sm" onclick="listadoExportPDF('actividad')">⬇
+                                        PDF</button>
+                                </div>
+                            </div>
+                            <div id="lact-students" class="list-container"></div>
+                        </div>
+                        <div id="lact-empty" class="empty-state" style="display:none">
+                            <div class="empty-state-icon">👥</div>Seleccioná una actividad para ver el listado
+                        </div>
+                    </div>
+
+                    <!-- ── TAB: PAGOS ── -->
+                    <div id="listado-pagos" class="listado-panel hidden">
+                        <div class="card" style="margin-bottom:12px">
+                            <div class="form-row">
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label">Mes</label>
+                                    <input type="month" id="lpag-month" class="form-input" onchange="runListadoPagos()">
+                                </div>
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label">Actividad</label>
+                                    <select id="lpag-activity" class="form-select" onchange="runListadoPagos()">
+                                        <option value="">Todas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+                                <label
+                                    style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
+                                    <input type="radio" name="lpag-filter" value="all" checked
+                                        onchange="runListadoPagos()"> Todos
+                                </label>
+                                <label
+                                    style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
+                                    <input type="radio" name="lpag-filter" value="paid" onchange="runListadoPagos()">
+                                    Solo pagados
+                                </label>
+                                <label
+                                    style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
+                                    <input type="radio" name="lpag-filter" value="pending" onchange="runListadoPagos()">
+                                    Solo deudores
+                                </label>
+                            </div>
+                        </div>
+                        <div id="lpag-results">
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <span id="lpag-summary" style="font-size:13px;color:var(--gray-500)"></span>
+                                <div style="display:flex;gap:8px">
+                                    <button class="btn-secondary btn-sm" onclick="listadoExportCSV('pagos')">⬇
+                                        CSV</button>
+                                    <button class="btn-primary btn-sm" onclick="listadoExportPDF('pagos')">⬇
+                                        PDF</button>
+                                </div>
+                            </div>
+                            <div id="lpag-list" class="list-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- ── TAB: DEUDORES ── -->
+                    <div id="listado-deudores" class="listado-panel hidden">
+                        <div class="card" style="margin-bottom:12px">
+                            <div class="form-group" style="margin:0">
+                                <label class="form-label">Buscar alumno</label>
+                                <input type="search" id="ldeu-search" class="form-input" placeholder="Nombre o DNI..."
+                                    oninput="runListadoDeudores()">
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <span id="ldeu-summary" style="font-size:13px;color:var(--gray-500)"></span>
+                            <div style="display:flex;gap:8px">
+                                <button class="btn-secondary btn-sm" onclick="listadoExportCSV('deudores')">⬇
+                                    CSV</button>
+                                <button class="btn-primary btn-sm" onclick="listadoExportPDF('deudores')">⬇
+                                    PDF</button>
+                            </div>
+                        </div>
+                        <div id="ldeu-list" class="list-container"></div>
+                    </div>
+
+                    <!-- ── TAB: RECAUDACIÓN ── -->
+                    <div id="listado-recaudacion" class="listado-panel hidden">
+                        <div class="card" style="margin-bottom:12px">
+                            <div class="form-group" style="margin:0">
+                                <label class="form-label">Mes de cobro</label>
+                                <input type="month" id="lrec-month" class="form-input" onchange="runListadoRecaudacion()">
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <span id="lrec-summary" style="font-size:13px;color:var(--gray-500)"></span>
+                            <div style="display:flex;gap:8px">
+                                <button class="btn-secondary btn-sm" onclick="listadoExportCSV('recaudacion')">⬇
+                                    CSV</button>
+                                <button class="btn-primary btn-sm" onclick="listadoExportPDF('recaudacion')">⬇
+                                    PDF</button>
+                            </div>
+                        </div>
+                        <div id="lrec-list" class="list-container"></div>
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- USERS PAGE (inside main, but injected via JS navigate) -->
+    <!-- Hidden placeholder; content rendered by renderUsersPage() -->
+    <template id="tpl-page-users">
+        <div id="page-users" class="page hidden">
+            <div class="page-header">
+                <h2 class="page-title">Usuarios del sistema</h2>
+                <button class="btn-primary" onclick="openInviteModal()">+ Invitar administrador</button>
+            </div>
+
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header" style="cursor:pointer" onclick="toggleSection('inv-section')">
+                    <h3 class="card-title">⏳ Invitaciones pendientes</h3>
+                    <span id="inv-count" class="badge badge-blue">0</span>
+                </div>
+                <div id="inv-section">
+                    <div id="pending-invites-list" class="list-container" style="margin-top:8px"></div>
+                </div>
+            </div>
+
+            <h3
+                style="font-size:14px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">
+                Usuarios registrados</h3>
+            <div id="users-list" class="list-container"></div>
+        </div>
+    </template>
+
+    <!-- =================== MODALS =================== -->
+
+    <!-- Invite Admin Modal -->
+    <div id="modal-invite" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'modal-invite')">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3>Invitar Administrador</h3>
+                <button class="btn-icon" onclick="closeModal('modal-invite')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-invite" onsubmit="saveInvite(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email de Google *</label>
+                        <input type="email" id="inv-email" class="form-input" required placeholder="ejemplo@gmail.com">
+                        <p class="form-hint">La persona debe iniciar sesión con esta cuenta Google.
+                            Al hacerlo, quedará automáticamente como administrador activo.</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre (referencia)</label>
+                        <input type="text" id="inv-name" class="form-input" placeholder="Nombre y apellido">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary"
+                            onclick="closeModal('modal-invite')">Cancelar</button>
+                        <button type="submit" class="btn-primary" id="btn-save-invite">Enviar invitación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Role Modal -->
+    <div id="modal-change-role" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'modal-change-role')">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3>Editar usuario</h3>
+                <button class="btn-icon" onclick="closeModal('modal-change-role')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-role" onsubmit="saveUserRole(event)">
+                    <p id="role-user-name" style="font-weight:600;margin-bottom:16px"></p>
+                    <div class="form-group">
+                        <label class="form-label">Rol</label>
+                        <select id="role-select" class="form-select">
+                            <option value="admin">Administrador</option>
+                            <option value="prof">Profesor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="role-active" class="form-select">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display:flex;gap:8px;flex:1">
+                            <button type="button" class="btn-secondary"
+                                onclick="closeModal('modal-change-role')">Cancelar</button>
+                            <button type="button" class="btn-danger" onclick="deleteUser()">Eliminar</button>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Form Modal -->
+    <div id="modal-student" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-student')">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-student-title">Nuevo Alumno</h3>
+                <button class="btn-icon" onclick="closeModal('modal-student')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-student" onsubmit="saveStudent(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Apellido *</label>
+                            <input type="text" id="s-lastName" class="form-input" required autocomplete="family-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" id="s-firstName" class="form-input" required autocomplete="given-name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono de contacto del adulto responsable</label>
+                        <input type="tel" id="s-guardianPhone" class="form-input">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Colegio</label>
+                            <input type="text" id="s-school" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Curso</label>
+                            <input type="text" id="s-grade" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div style="display:flex;gap:8px;flex:1">
+                            <button type="button" class="btn-secondary"
+                                onclick="closeModal('modal-student')">Cancelar</button>
+                            <button type="button" id="btn-disable-student" class="btn-danger hidden"
+                                onclick="toggleStudentActive()">Deshabilitar</button>
+                        </div>
+                        <button type="submit" class="btn-primary" id="btn-save-student">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Form Modal -->
+    <div id="modal-activity" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-activity')">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-activity-title">Nueva Actividad</h3>
+                <button class="btn-icon" onclick="closeModal('modal-activity')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-activity" onsubmit="saveActivity(event)">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la actividad *</label>
+                        <input type="text" id="a-name" class="form-input" required placeholder="Ej: Fútbol Sub-12">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Días de la semana *</label>
+                        <div class="days-picker" id="a-days">
+                            <label class="day-chip"><input type="checkbox" value="1"> Lun</label>
+                            <label class="day-chip"><input type="checkbox" value="2"> Mar</label>
+                            <label class="day-chip"><input type="checkbox" value="3"> Mié</label>
+                            <label class="day-chip"><input type="checkbox" value="4"> Jue</label>
+                            <label class="day-chip"><input type="checkbox" value="5"> Vie</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hora inicio *</label>
+                            <input type="time" id="a-startTime" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora fin *</label>
+                            <input type="time" id="a-endTime" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cuota mensual ($) *</label>
+                        <input type="number" id="a-fee" class="form-input" required min="0" step="100">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Inicio de actividad</label>
+                            <input type="date" id="a-startDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fin de actividad</label>
+                            <input type="date" id="a-endDate" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Profesor/a asignado/a</label>
+                        <select id="a-professor" class="form-select">
+                            <option value="">— Sin asignar —</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="a-status" class="form-select">
+                            <option value="active">Activa</option>
+                            <option value="inactive">Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display:flex;gap:8px;flex:1">
+                            <button type="button" class="btn-secondary"
+                                onclick="closeModal('modal-activity')">Cancelar</button>
+                            <button type="button" id="btn-delete-activity" class="btn-danger hidden"
+                                onclick="deleteActivity()">Eliminar</button>
+                        </div>
+                        <button type="submit" class="btn-primary" id="btn-save-activity">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff / Professor Form Modal -->
+    <div id="modal-staff" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-staff')">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3 id="modal-staff-title">Nuevo Profesor</h3>
+                <button class="btn-icon" onclick="closeModal('modal-staff')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-staff" onsubmit="saveStaff(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" id="p-firstName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Apellido *</label>
+                            <input type="text" id="p-lastName" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email (Google) *</label>
+                        <input type="email" id="p-email" class="form-input" required
+                            placeholder="El mismo que usa para iniciar sesión">
+                        <p class="form-hint">Debe ser el email de la cuenta Google con la que el profesor va a ingresar.
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" id="p-phone" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Especialidad</label>
+                        <input type="text" id="p-specialty" class="form-input" placeholder="Ej: Fútbol, Natación">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="p-active" class="form-select">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display:flex;gap:8px;flex:1">
+                            <button type="button" class="btn-secondary"
+                                onclick="closeModal('modal-staff')">Cancelar</button>
+                            <button type="button" id="btn-delete-staff" class="btn-danger hidden"
+                                onclick="deleteStaff()">Eliminar</button>
+                        </div>
+                        <button type="submit" class="btn-primary" id="btn-save-staff">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enroll Student Modal -->
+    <div id="modal-enroll" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-enroll')">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3>Inscribir a actividad</h3>
+                <button class="btn-icon" onclick="closeModal('modal-enroll')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="enroll-student-name" class="enroll-student-name"></p>
+                <div id="enroll-activities-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="modal-payment" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-payment')">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3>Registrar Pago</h3>
+                <button class="btn-icon" onclick="closeModal('modal-payment')">✕</button>
+            </div>
+            <div class="modal-body" id="payment-modal-body">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module" src="app.js"></script>
+    <script>
+        // Desregistrar service workers anteriores para evitar servir JS cacheado
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(reg => reg.unregister());
+            });
+            caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+        }
+    </script>
+</body>
+
+</html>
