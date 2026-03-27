@@ -2,7 +2,7 @@
     "name": "CASTA — Escuela Deportiva",
     "short_name": "CASTA",
     "description": "Sistema de administración de la Escuela Deportiva CASTA",
-    "start_url": "./index.html",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#1565C0",
     "theme_color": "#1565C0",
