@@ -36,7 +36,7 @@
                         <h1 class="logo-title">Escuela Deportiva CASTA</h1>
                     </div>
                     <div id="login-error" class="alert alert-error hidden"></div>
-                    <button id="btn-google-login" class="btn-google" onclick="signInWithGoogle()">
+                    <button id="btn-google-login" class="btn-google" >
                         <svg width="20" height="20" viewBox="0 0 48 48">
                             <path fill="#EA4335"
                                 d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -58,7 +58,7 @@
         <div id="screen-app" class="screen hidden">
             <!-- Top Bar -->
             <header class="topbar">
-                <button class="btn-icon menu-toggle" onclick="toggleSidebar()" aria-label="Menú">
+                <button class="btn-icon menu-toggle" id="btn-toggle-sidebar" aria-label="Menú">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
                         <line x1="3" y1="6" x2="21" y2="6" />
@@ -72,7 +72,7 @@
                 </div>
                 <div class="topbar-right">
                     <div class="user-avatar" id="user-avatar" title=""></div>
-                    <button class="btn-icon" onclick="signOut()" title="Cerrar sesión">
+                    <button class="btn-icon" id="btn-signout-top" title="Cerrar sesión">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -84,45 +84,45 @@
             </header>
 
             <!-- Sidebar -->
-            <nav id="sidebar" class="sidebar" onclick="handleSidebarClick(event)">
-                <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+            <nav id="sidebar" class="sidebar" >
+                <div class="sidebar-overlay" data-action="closeSidebar"></div>
                 <div class="sidebar-panel">
                     <div class="sidebar-header">
                         <div class="sidebar-logo"><img src="logo.png"
                                 style="width:24px;height:24px;vertical-align:middle;margin-right:8px;border-radius:4px;">
                             Escuela Deportiva CASTA</div>
-                        <button class="btn-icon sidebar-close" onclick="closeSidebar()">✕</button>
+                        <button class="btn-icon sidebar-close" data-action="closeSidebar">✕</button>
                     </div>
                     <ul class="nav-list">
-                        <li><button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+                        <li><button class="nav-item active" data-page="dashboard" >
                                 <span class="nav-icon">📊</span> Dashboard
                             </button></li>
-                        <li><button class="nav-item" data-page="students" onclick="navigate('students')">
+                        <li><button class="nav-item" data-page="students" >
                                 <span class="nav-icon">👨‍🎓</span> Alumnos
                             </button></li>
-                        <li><button class="nav-item" data-page="activities" onclick="navigate('activities')">
+                        <li><button class="nav-item" data-page="activities" >
                                 <span class="nav-icon">🏃</span> Actividades
                             </button></li>
-                        <li><button class="nav-item" data-page="attendance" onclick="navigate('attendance')">
+                        <li><button class="nav-item" data-page="attendance" >
                                 <span class="nav-icon">✅</span> Asistencia
                             </button></li>
-                        <li><button class="nav-item" data-page="payments" onclick="navigate('payments')">
+                        <li><button class="nav-item" data-page="payments" >
                                 <span class="nav-icon">💰</span> Pagos
                             </button></li>
-                        <li><button class="nav-item" data-page="staff" onclick="navigate('staff')">
+                        <li><button class="nav-item" data-page="staff" >
                                 <span class="nav-icon">👨‍🏫</span> Profesores
                             </button></li>
-                        <li><button class="nav-item" data-page="exports" onclick="navigate('exports')">
+                        <li><button class="nav-item" data-page="exports" >
                                 <span class="nav-icon">�</span> Listados
                             </button></li>
                         <li id="nav-users" class="hidden"><button class="nav-item" data-page="users"
-                                onclick="navigate('users')">
+                                >
                                 <span class="nav-icon">👥</span> Usuarios
                             </button></li>
                     </ul>
                     <div class="sidebar-footer">
                         <div id="sidebar-user-info" class="sidebar-user"></div>
-                        <button class="btn-secondary btn-sm" onclick="signOut()">Cerrar sesión</button>
+                        <button class="btn-secondary btn-sm" id="btn-signout-sidebar">Cerrar sesión</button>
                     </div>
                 </div>
             </nav>
@@ -172,11 +172,11 @@
                 <div id="page-students" class="page hidden">
                     <div class="page-header">
                         <h2 class="page-title">Alumnos</h2>
-                        <button class="btn-primary" onclick="openStudentForm()">+ Nuevo alumno</button>
+                        <button class="btn-primary" id="btn-new-student">+ Nuevo alumno</button>
                     </div>
                     <div class="search-bar-wrap">
                         <input type="search" id="student-search" class="search-input"
-                            placeholder="🔍 Buscar por nombre..." oninput="filterStudents()">
+                            placeholder="🔍 Buscar por nombre..." >
                     </div>
                     <div id="students-list" class="list-container">
                         <div class="loading-spinner">Cargando alumnos...</div>
@@ -187,7 +187,7 @@
                 <div id="page-staff" class="page hidden">
                     <div class="page-header">
                         <h2 class="page-title">Profesores</h2>
-                        <button class="btn-primary" onclick="openStaffForm()">+ Nuevo profesor</button>
+                        <button class="btn-primary" id="btn-new-staff">+ Nuevo profesor</button>
                     </div>
                     <div id="staff-list" class="list-container">
                         <div class="loading-spinner">Cargando...</div>
@@ -198,7 +198,7 @@
                 <div id="page-activities" class="page hidden">
                     <div class="page-header">
                         <h2 class="page-title">Actividades</h2>
-                        <button class="btn-primary" id="btn-new-activity" onclick="openActivityForm()">+ Nueva
+                        <button class="btn-primary" id="btn-new-activity">+ Nueva
                             actividad</button>
                     </div>
                     <div id="activities-list" class="list-container">
@@ -216,14 +216,14 @@
                             <div class="form-group" style="margin-bottom:0">
                                 <label class="form-label">Actividad</label>
                                 <select id="attendance-activity-select" class="form-select"
-                                    onchange="loadAttendanceGrid()">
+                                    >
                                     <option value="">— Seleccionar actividad —</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom:0">
                                 <label class="form-label">Mes</label>
                                 <select id="attendance-month-select" class="form-select"
-                                    onchange="loadAttendanceGrid()">
+                                    >
                                 </select>
                             </div>
                         </div>
@@ -240,13 +240,13 @@
                         <div class="form-row">
                             <div class="form-group" style="margin-bottom:0">
                                 <label class="form-label">Actividad</label>
-                                <select id="pay-activity-select" class="form-select" onchange="loadPaymentsGrid()">
+                                <select id="pay-activity-select" class="form-select" >
                                     <option value="">— Seleccionar actividad —</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom:0">
                                 <label class="form-label">Mes</label>
-                                <select id="pay-month-select" class="form-select" onchange="loadPaymentsGrid()">
+                                <select id="pay-month-select" class="form-select" >
                                 </select>
                             </div>
                         </div>
@@ -263,12 +263,12 @@
                     <!-- Tab selector -->
                     <div class="listados-tabs" id="listados-tabs">
                         <button class="listados-tab active" data-tab="actividad"
-                            onclick="switchListadoTab('actividad')">👥 Por actividad</button>
-                        <button class="listados-tab" data-tab="pagos" onclick="switchListadoTab('pagos')">💳
+                            >👥 Por actividad</button>
+                        <button class="listados-tab" data-tab="pagos" >💳
                             Pagos por mes</button>
-                        <button class="listados-tab" data-tab="deudores" onclick="switchListadoTab('deudores')">⚠️
+                        <button class="listados-tab" data-tab="deudores" >⚠️
                             Deudores</button>
-                        <button class="listados-tab" data-tab="recaudacion" onclick="switchListadoTab('recaudacion')">💰
+                        <button class="listados-tab" data-tab="recaudacion" >💰
                             Recaudación</button>
                     </div>
 
@@ -277,7 +277,7 @@
                         <div class="card" style="margin-bottom:12px">
                             <div class="form-group" style="margin:0">
                                 <label class="form-label">Actividad</label>
-                                <select id="lact-activity" class="form-select" onchange="runListadoActividad()">
+                                <select id="lact-activity" class="form-select" >
                                     <option value="">— Seleccionar actividad —</option>
                                 </select>
                             </div>
@@ -291,9 +291,9 @@
                                     Alumnos inscriptos <span id="lact-count" class="badge badge-blue">0</span>
                                 </h3>
                                 <div style="display:flex;gap:8px">
-                                    <button class="btn-secondary btn-sm" onclick="listadoExportCSV('actividad')">⬇
+                                    <button class="btn-secondary btn-sm" data-action="export-csv" data-tab="actividad">⬇
                                         CSV</button>
-                                    <button class="btn-primary btn-sm" onclick="listadoExportPDF('actividad')">⬇
+                                    <button class="btn-primary btn-sm" data-action="export-pdf" data-tab="actividad">⬇
                                         PDF</button>
                                 </div>
                             </div>
@@ -310,11 +310,11 @@
                             <div class="form-row">
                                 <div class="form-group" style="margin:0">
                                     <label class="form-label">Mes</label>
-                                    <input type="month" id="lpag-month" class="form-input" onchange="runListadoPagos()">
+                                    <input type="month" id="lpag-month" class="form-input" >
                                 </div>
                                 <div class="form-group" style="margin:0">
                                     <label class="form-label">Actividad</label>
-                                    <select id="lpag-activity" class="form-select" onchange="runListadoPagos()">
+                                    <select id="lpag-activity" class="form-select" >
                                         <option value="">Todas</option>
                                     </select>
                                 </div>
@@ -323,16 +323,16 @@
                                 <label
                                     style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
                                     <input type="radio" name="lpag-filter" value="all" checked
-                                        onchange="runListadoPagos()"> Todos
+                                        > Todos
                                 </label>
                                 <label
                                     style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
-                                    <input type="radio" name="lpag-filter" value="paid" onchange="runListadoPagos()">
+                                    <input type="radio" name="lpag-filter" value="paid" >
                                     Solo pagados
                                 </label>
                                 <label
                                     style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:500">
-                                    <input type="radio" name="lpag-filter" value="pending" onchange="runListadoPagos()">
+                                    <input type="radio" name="lpag-filter" value="pending" >
                                     Solo deudores
                                 </label>
                             </div>
@@ -342,9 +342,9 @@
                                 style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                                 <span id="lpag-summary" style="font-size:13px;color:var(--gray-500)"></span>
                                 <div style="display:flex;gap:8px">
-                                    <button class="btn-secondary btn-sm" onclick="listadoExportCSV('pagos')">⬇
+                                    <button class="btn-secondary btn-sm" data-action="export-csv" data-tab="pagos">⬇
                                         CSV</button>
-                                    <button class="btn-primary btn-sm" onclick="listadoExportPDF('pagos')">⬇
+                                    <button class="btn-primary btn-sm" data-action="export-pdf" data-tab="pagos">⬇
                                         PDF</button>
                                 </div>
                             </div>
@@ -358,15 +358,15 @@
                             <div class="form-group" style="margin:0">
                                 <label class="form-label">Buscar alumno</label>
                                 <input type="search" id="ldeu-search" class="form-input" placeholder="Nombre o DNI..."
-                                    oninput="runListadoDeudores()">
+                                    >
                             </div>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                             <span id="ldeu-summary" style="font-size:13px;color:var(--gray-500)"></span>
                             <div style="display:flex;gap:8px">
-                                <button class="btn-secondary btn-sm" onclick="listadoExportCSV('deudores')">⬇
+                                <button class="btn-secondary btn-sm" data-action="export-csv" data-tab="deudores">⬇
                                     CSV</button>
-                                <button class="btn-primary btn-sm" onclick="listadoExportPDF('deudores')">⬇
+                                <button class="btn-primary btn-sm" data-action="export-pdf" data-tab="deudores">⬇
                                     PDF</button>
                             </div>
                         </div>
@@ -378,15 +378,15 @@
                         <div class="card" style="margin-bottom:12px">
                             <div class="form-group" style="margin:0">
                                 <label class="form-label">Mes de cobro</label>
-                                <input type="month" id="lrec-month" class="form-input" onchange="runListadoRecaudacion()">
+                                <input type="month" id="lrec-month" class="form-input" >
                             </div>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                             <span id="lrec-summary" style="font-size:13px;color:var(--gray-500)"></span>
                             <div style="display:flex;gap:8px">
-                                <button class="btn-secondary btn-sm" onclick="listadoExportCSV('recaudacion')">⬇
+                                <button class="btn-secondary btn-sm" data-action="export-csv" data-tab="recaudacion">⬇
                                     CSV</button>
-                                <button class="btn-primary btn-sm" onclick="listadoExportPDF('recaudacion')">⬇
+                                <button class="btn-primary btn-sm" data-action="export-pdf" data-tab="recaudacion">⬇
                                     PDF</button>
                             </div>
                         </div>
@@ -405,11 +405,11 @@
         <div id="page-users" class="page hidden">
             <div class="page-header">
                 <h2 class="page-title">Usuarios del sistema</h2>
-                <button class="btn-primary" onclick="openInviteModal()">+ Invitar administrador</button>
+                <button class="btn-primary" id="btn-invite-user">+ Invitar administrador</button>
             </div>
 
             <div class="card" style="margin-bottom:16px">
-                <div class="card-header" style="cursor:pointer" onclick="toggleSection('inv-section')">
+                <div class="card-header" style="cursor:pointer" id="btn-toggle-inv-section">
                     <h3 class="card-title">⏳ Invitaciones pendientes</h3>
                     <span id="inv-count" class="badge badge-blue">0</span>
                 </div>
@@ -428,14 +428,14 @@
     <!-- =================== MODALS =================== -->
 
     <!-- Invite Admin Modal -->
-    <div id="modal-invite" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'modal-invite')">
+    <div id="modal-invite" class="modal-overlay hidden" data-modal-overlay="modal-invite">
         <div class="modal-box modal-sm">
             <div class="modal-header">
                 <h3>Invitar Administrador</h3>
-                <button class="btn-icon" onclick="closeModal('modal-invite')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-invite">✕</button>
             </div>
             <div class="modal-body">
-                <form id="form-invite" onsubmit="saveInvite(event)">
+                <form id="form-invite" >
                     <div class="form-group">
                         <label class="form-label">Email de Google *</label>
                         <input type="email" id="inv-email" class="form-input" required placeholder="ejemplo@gmail.com">
@@ -448,7 +448,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary"
-                            onclick="closeModal('modal-invite')">Cancelar</button>
+                            data-close-modal="modal-invite">Cancelar</button>
                         <button type="submit" class="btn-primary" id="btn-save-invite">Enviar invitación</button>
                     </div>
                 </form>
@@ -457,14 +457,14 @@
     </div>
 
     <!-- Change Role Modal -->
-    <div id="modal-change-role" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'modal-change-role')">
+    <div id="modal-change-role" class="modal-overlay hidden" data-modal-overlay="modal-change-role">
         <div class="modal-box modal-sm">
             <div class="modal-header">
                 <h3>Editar usuario</h3>
-                <button class="btn-icon" onclick="closeModal('modal-change-role')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-change-role">✕</button>
             </div>
             <div class="modal-body">
-                <form id="form-change-role" onsubmit="saveUserRole(event)">
+                <form id="form-change-role" >
                     <p id="role-user-name" style="font-weight:600;margin-bottom:16px"></p>
                     <div class="form-group">
                         <label class="form-label">Rol</label>
@@ -483,8 +483,8 @@
                     <div class="modal-footer">
                         <div style="display:flex;gap:8px;flex:1">
                             <button type="button" class="btn-secondary"
-                                onclick="closeModal('modal-change-role')">Cancelar</button>
-                            <button type="button" class="btn-danger" onclick="deleteUser()">Eliminar</button>
+                                data-close-modal="modal-change-role">Cancelar</button>
+                            <button type="button" class="btn-danger" id="btn-delete-user">Eliminar</button>
                         </div>
                         <button type="submit" class="btn-primary">Guardar cambios</button>
                     </div>
@@ -494,14 +494,14 @@
     </div>
 
     <!-- Student Form Modal -->
-    <div id="modal-student" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-student')">
+    <div id="modal-student" class="modal-overlay hidden" data-modal-overlay="modal-student">
         <div class="modal-box">
             <div class="modal-header">
                 <h3 id="modal-student-title">Nuevo Alumno</h3>
-                <button class="btn-icon" onclick="closeModal('modal-student')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-student">✕</button>
             </div>
             <div class="modal-body">
-                <form id="form-student" onsubmit="saveStudent(event)">
+                <form id="form-student" >
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Apellido *</label>
@@ -530,9 +530,9 @@
                     <div class="modal-footer">
                         <div style="display:flex;gap:8px;flex:1">
                             <button type="button" class="btn-secondary"
-                                onclick="closeModal('modal-student')">Cancelar</button>
+                                data-close-modal="modal-student">Cancelar</button>
                             <button type="button" id="btn-disable-student" class="btn-danger hidden"
-                                onclick="toggleStudentActive()">Deshabilitar</button>
+                                >Deshabilitar</button>
                         </div>
                         <button type="submit" class="btn-primary" id="btn-save-student">Guardar</button>
                     </div>
@@ -542,14 +542,14 @@
     </div>
 
     <!-- Activity Form Modal -->
-    <div id="modal-activity" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-activity')">
+    <div id="modal-activity" class="modal-overlay hidden" data-modal-overlay="modal-activity">
         <div class="modal-box">
             <div class="modal-header">
                 <h3 id="modal-activity-title">Nueva Actividad</h3>
-                <button class="btn-icon" onclick="closeModal('modal-activity')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-activity">✕</button>
             </div>
             <div class="modal-body">
-                <form id="form-activity" onsubmit="saveActivity(event)">
+                <form id="form-activity" >
                     <div class="form-group">
                         <label class="form-label">Nombre de la actividad *</label>
                         <input type="text" id="a-name" class="form-input" required placeholder="Ej: Fútbol Sub-12">
@@ -604,9 +604,9 @@
                     <div class="modal-footer">
                         <div style="display:flex;gap:8px;flex:1">
                             <button type="button" class="btn-secondary"
-                                onclick="closeModal('modal-activity')">Cancelar</button>
+                                data-close-modal="modal-activity">Cancelar</button>
                             <button type="button" id="btn-delete-activity" class="btn-danger hidden"
-                                onclick="deleteActivity()">Eliminar</button>
+                                >Eliminar</button>
                         </div>
                         <button type="submit" class="btn-primary" id="btn-save-activity">Guardar</button>
                     </div>
@@ -616,14 +616,14 @@
     </div>
 
     <!-- Staff / Professor Form Modal -->
-    <div id="modal-staff" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-staff')">
+    <div id="modal-staff" class="modal-overlay hidden" data-modal-overlay="modal-staff">
         <div class="modal-box modal-sm">
             <div class="modal-header">
                 <h3 id="modal-staff-title">Nuevo Profesor</h3>
-                <button class="btn-icon" onclick="closeModal('modal-staff')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-staff">✕</button>
             </div>
             <div class="modal-body">
-                <form id="form-staff" onsubmit="saveStaff(event)">
+                <form id="form-staff" >
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Nombre *</label>
@@ -659,9 +659,9 @@
                     <div class="modal-footer">
                         <div style="display:flex;gap:8px;flex:1">
                             <button type="button" class="btn-secondary"
-                                onclick="closeModal('modal-staff')">Cancelar</button>
+                                data-close-modal="modal-staff">Cancelar</button>
                             <button type="button" id="btn-delete-staff" class="btn-danger hidden"
-                                onclick="deleteStaff()">Eliminar</button>
+                                >Eliminar</button>
                         </div>
                         <button type="submit" class="btn-primary" id="btn-save-staff">Guardar</button>
                     </div>
@@ -671,11 +671,11 @@
     </div>
 
     <!-- Enroll Student Modal -->
-    <div id="modal-enroll" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-enroll')">
+    <div id="modal-enroll" class="modal-overlay hidden" data-modal-overlay="modal-enroll">
         <div class="modal-box modal-sm">
             <div class="modal-header">
                 <h3>Inscribir a actividad</h3>
-                <button class="btn-icon" onclick="closeModal('modal-enroll')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-enroll">✕</button>
             </div>
             <div class="modal-body">
                 <p id="enroll-student-name" class="enroll-student-name"></p>
@@ -685,11 +685,11 @@
     </div>
 
     <!-- Payment Modal -->
-    <div id="modal-payment" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'modal-payment')">
+    <div id="modal-payment" class="modal-overlay hidden" data-modal-overlay="modal-payment">
         <div class="modal-box modal-sm">
             <div class="modal-header">
                 <h3>Registrar Pago</h3>
-                <button class="btn-icon" onclick="closeModal('modal-payment')">✕</button>
+                <button class="btn-icon" data-close-modal="modal-payment">✕</button>
             </div>
             <div class="modal-body" id="payment-modal-body">
             </div>
@@ -705,7 +705,7 @@
     </div>
 
     <!-- Firebase SDKs -->
-    <script type="module" src="app.js"></script>
+    <script type="module" src="js/app.js"></script>
     <script>
         // Desregistrar service workers anteriores para evitar servir JS cacheado
         if ('serviceWorker' in navigator) {
