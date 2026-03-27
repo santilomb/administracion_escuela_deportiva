@@ -47,7 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ]);
     };
 
-    // 5. Authentication workflow is started automatically inside initAuth() via onAuthStateChanged
+    // 5. When auth succeeds, load all data and show the dashboard
+    window.addEventListener('auth-success', async () => {
+        await window.loadAllData();
+        navigate('dashboard');
+    });
+
+    // 6. Authentication workflow is started automatically inside initAuth() via onAuthStateChanged
     
     // Provide a global window function if needed temporarily for inline handlers still present (until phase 3 HTML cleanup)
     window.navigate = navigate;

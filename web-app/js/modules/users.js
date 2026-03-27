@@ -12,6 +12,13 @@ export function initUsers() {
                 return;
             }
             ensureUsersPageInDom();
+            // The router already tried to show #page-users before this listener ran,
+            // so we need to manually activate it after the template is injected.
+            const pageEl = $('page-users');
+            if (pageEl) {
+                pageEl.classList.remove('hidden');
+                pageEl.classList.add('active');
+            }
             setTimeout(() => renderUsersPage(), 50);
         }
     });
